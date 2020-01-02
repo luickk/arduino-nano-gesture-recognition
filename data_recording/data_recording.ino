@@ -26,6 +26,8 @@ void setup()
 float accel_x, accel_y, accel_z;
 float gyro_x, gyro_y, gyro_z;
 
+// 23 55-56
+// 24 9-10
 void loop()
 {
   //Accelerometer values 
@@ -34,7 +36,7 @@ void loop()
     IMU.readAcceleration(accel_x, accel_y, accel_z);
     IMU.readGyroscope(gyro_x, gyro_y, gyro_z);
     
-    Serial.print(gyro_x); Serial.print(",");Serial.print(gyro_y);Serial.print(",");Serial.println(gyro_z);Serial.print(",");Serial.print(accel_x); Serial.print(",");Serial.print(accel_y);Serial.print(",");Serial.println(accel_z);
+    Serial.print(gyro_x); Serial.print(",");Serial.print(gyro_y);Serial.print(",");Serial.print(gyro_z);Serial.print(",");Serial.print(accel_x); Serial.print(",");Serial.print(accel_y);Serial.print(",");Serial.println(accel_z);
     
     // Serial.print("Gyroscope = ");Serial.print(gyro_x); Serial.print(", ");Serial.print(gyro_y);Serial.print(", ");Serial.println(gyro_z);
     // Serial.print("Accelerometer = ");Serial.print(accel_x); Serial.print(", ");Serial.print(accel_y);Serial.print(", ");Serial.println(accel_z);
