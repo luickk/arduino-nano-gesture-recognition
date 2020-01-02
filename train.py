@@ -9,25 +9,24 @@ from matplotlib import pyplot
 
 from data_proc import data
 
-def simple_rnn():
+def simple_rnn(x, y):
 	model = Sequential()
-	model.add(LSTM(100, input_shape=(n_timesteps,n_features)))
+	model.add(LSTM(100, input_shape=(x.shape[1],x.shape[2]), return_sequences=True))
 	model.add(Dropout(0.5))
 	model.add(Dense(100, activation='relu'))
-	model.add(Dense(n_outputs, activation='softmax'))
+	model.add(Dense(6, activation='softmax'))
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 	return model
 
 def train(train_x, train_y, test_x, test_y):
 	verbose, epochs, batch_size = 0, 15, 64
-	n_timesteps, n_features, n_outputs = train_x.shape[1], train_x.shape[2], train_y.shape[1]
 
-	model = simple_renn()
+	model = simple_rnn(train_x, train_y)
 
-	model.fit(train_x, train_y, epochs=epochs, batch_size=batch_size, verbose=verbose)
+	model.fit(train_x, train_y, epochs=epochs)
 
-	_, accuracy = model.evaluate(test_x, test_y, batch_size=batch_size, verbose=0)
+	_, accuracy = model.evaluate(test_x, test_y)
 
 	return accuracy
 

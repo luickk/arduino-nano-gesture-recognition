@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
+from keras.utils import to_categorical
 from pandas import read_csv
 
 # splits x and y data to x,y arrays
@@ -16,6 +17,7 @@ def parse_raw_csv(data_stack):
 
 	x = np.array(stack_x)
 	y = np.array(stack_y)
+
 	return x,y
 
 # sample data to final x/y test/ train
@@ -29,14 +31,22 @@ def load_data(filepath):
 
 	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=1/3, random_state=0)
 
-	print("Data: ")
+	x_train = np.reshape(x_train, (1, x_train.shape[0], x_train.shape[1])) # X.reshape(samples, timesteps, features)
+	x_test = np.reshape(x_test, (1, x_test.shape[0], x_test.shape[1])) # X.reshape(samples, timesteps, features)
+
+	y_train = to_categorical(y_train)
+	y_test = to_categorical(y_test)
+
+	print("Raw Data: ")
 	print(data_stack)
 
-	print("x train, test:")
+	print("x train:")
 	print(x_train.shape)
+	print("x test:")
 	print(x_test.shape)
-	print("y train, test:")
+	print("y train:")
 	print(y_train.shape)
+	print("y test:")
 	print(y_test.shape)
 
 	return x_train, x_test, y_train, y_test
