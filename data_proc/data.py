@@ -51,11 +51,16 @@ def load_data(filepath):
 
 	return x_train, x_test, y_train, y_test
 
+def batch_test_data(test_x, test_y, batch_size):
+	for i in range(batch_size):
+		return np.array(test_x[:, i*batch_size:i*batch_size+batch_size, :]), np.array(test_y[i*batch_size:i*batch_size+batch_size, :])
+
 def data_batch_generator(filepath, batch_size, x_train, y_train):
 	batch_x, batch_y = [], []
 	while True:
 		for i in range(batch_size):
 			batch_x = np.array(x_train[:, i*batch_size:i*batch_size+batch_size, :])
+			batch_x = np.resize(batch_x, (batch_size, batch_size, 6))
 			batch_y = np.array(y_train[i*batch_size:i*batch_size+batch_size, :])
 
 		print("batch x: " + str(batch_x.shape))

@@ -11,7 +11,7 @@ from data_proc import data
 
 def simple_rnn(x, y, batch_size):
 	model = Sequential()
-	model.add(LSTM(100, batch_size=batch_size, input_shape=(batch_size,x.shape[2])))
+	model.add(LSTM(100, input_shape=(batch_size, 6)))
 	model.add(Dropout(0.5))
 	model.add(Dense(100, activation='relu'))
 	model.add(Dense(2, activation='softmax'))
@@ -24,15 +24,17 @@ def train(filepath, batch_size, epochs):
 
 	model = simple_rnn(x_train, y_train, batch_size)
 
-	model.fit_generator(data.data_batch_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=len(x_train), epochs=epochs)
+	model.fit_generator(data.data_batch_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
 
-	_, accuracy = model.evaluate(test_x, test_y)
+	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
+
+	_, accuracy = model.evaluate(x_test, y_test)
 
 	return accuracy
 
 def main():
 
-	train("data/test_data.csv", 50, 10)
+	train("data/test_data.csv", 5, 1)
 
 if __name__ == '__main__':
     main()
