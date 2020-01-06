@@ -28,13 +28,31 @@ def train(filepath, batch_size, epochs):
 
 	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
 
-	_, accuracy = model.evaluate(x_test, y_test)
+	print(model.evaluate(x_test, y_test))
 
-	return accuracy
+	return model, x_test, y_test
+
+def test_predict(model, batch_size, filepath):
+	x_train, x_test, y_train, y_test = data.load_data(filepath)
+	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
+
+	prediction = model.predict(x_test)
+
+	print("prediction: ")
+	print(prediction)
+
+	print("test data: ")
+	print(y_test)
 
 def main():
+	epochs = 1
+	batch_size = 2
 
-	train("data/test_data.csv", 5, 1)
+	# model = train("data/punch_data/recorded_data.csv", batch_size, epochs)
+
+	model, x_test, y_test = train("data/punch_data/test.csv", batch_size, epochs)
+
+	test_predict(model, batch_size, "data/punch_data/sampled_data/punch1.csv")
 
 if __name__ == '__main__':
     main()
