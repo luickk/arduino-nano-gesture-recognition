@@ -1,11 +1,13 @@
 import numpy as np
 from keras.models import Sequential
+from keras.models import load_model
 from keras.layers import Dense
 from keras.layers import Flatten
 from keras.layers import Dropout
 from keras.layers import LSTM
 from keras.utils import to_categorical
 from matplotlib import pyplot
+from datetime import date
 
 from data_proc import data
 
@@ -30,7 +32,17 @@ def train(filepath, batch_size, epochs):
 
 	print(model.evaluate(x_test, y_test))
 
-	return model, x_test, y_test
+	return model
+
+def save_model(model):
+	# Save the model
+	model.save('model_data/'+str(date.today())+'.h5')
+
+
+def load_model(path):
+	# Recreate the exact same model purely from the file
+	return load_model(model)
+
 
 def test_predict(model, batch_size, filepath):
 	x_train, x_test, y_train, y_test = data.load_data(filepath)
@@ -39,7 +51,7 @@ def test_predict(model, batch_size, filepath):
 	prediction = model.predict(x_test)
 
 	print("prediction: ")
-	print(prediction)
+	print(np.around(prediction))
 
 	print("test data: ")
 	print(y_test)
@@ -50,9 +62,11 @@ def main():
 
 	# model = train("data/punch_data/recorded_data.csv", batch_size, epochs)
 
-	model, x_test, y_test = train("data/punch_data/test.csv", batch_size, epochs)
+	model = train("data/punch_data/test.csv", batch_size, epochs)
 
-	test_predict(model, batch_size, "data/punch_data/sampled_data/punch1.csv")
+	test_predict(model, batch_size, "data/punch_data/sampled_data/invalid.csv")
+
+	save_model(model)
 
 if __name__ == '__main__':
     main()
