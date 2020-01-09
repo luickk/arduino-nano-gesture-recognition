@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from pandas import read_csv
@@ -50,6 +51,12 @@ def load_data(filepath):
 	print(y_test.shape)
 
 	return x_train, x_test, y_train, y_test
+
+def export_lite_model(model):
+	converter = tf.lite.TFLiteConverter.from_keras_model(model)
+	tfmodel = converter.convert()
+	open ("model.tflite" , "wb") .write(tfmodel)
+
 
 def batch_test_data(test_x, test_y, batch_size):
 	for i in range(batch_size):

@@ -35,8 +35,11 @@ def train(filepath, batch_size, epochs):
 	return model
 
 def save_model(model):
+	path = 'model_data/'+str(date.today())+'.h5'
 	# Save the model
-	model.save('model_data/'+str(date.today())+'.h5')
+	model.save(path)
+
+	# data.export_lite_model(model)
 
 
 def load_model(path):
