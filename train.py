@@ -58,8 +58,6 @@ def train_cnn(filepath, batch_size, epochs):
 
 	model.fit_generator(data.data_batch_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
 
-	# model.fit(x_train, y_train,batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(x_test, y_test))
-
 	# x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
 
 	# print(model.evaluate(x_test, y_test))
@@ -99,7 +97,7 @@ def main():
 
 	model = train_cnn("data/punch_data/test.csv", batch_size, epochs)
 
-	test_predict(model, batch_size, "data/punch_data/sampled_data/invalid.csv")
+	test_predict(model, batch_size, "data/punch_data/sampled_data/punch1.csv")
 
 	save_model(model)
 

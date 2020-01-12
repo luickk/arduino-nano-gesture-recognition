@@ -9,6 +9,11 @@ The food watch is a strap (or a watch) which alerts the user when he eats someth
 Since a gesture resembles a sequence of data with a special pattern in a continuous data flow, the usage of a recurrent neural net seems like a adequat solution. But since RNNs are not ment to be used for a continous data flow and the sliding window technique it would neither be efficient nor useful.
 Additionally the by the RNN required tensorflow operation that are not supported by tensorflow lite, which is needed make the model run on a microcontroller or mobile phone.
 
+### CNN
+
+A CNN might not be ideal for squential data recognition but is perfect to be used for a sliding window and, continous data flows.
+
+
 # Depndencies
 
 - keras v2.1.5
