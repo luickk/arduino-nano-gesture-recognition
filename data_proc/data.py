@@ -63,12 +63,27 @@ def batch_test_data(test_x, test_y, batch_size):
 		# ugly resizing for the test input data but is required for the shifting window technique when using a rnn
 		return np.resize(np.array(test_x[:, i*batch_size:i*batch_size+batch_size, :]), (batch_size, batch_size, 6)), np.array(test_y[i*batch_size:i*batch_size+batch_size, :])
 
-def data_batch_generator(filepath, batch_size, x_train, y_train):
+def rnn_data_batch_generator(filepath, batch_size, x_train, y_train):
 	batch_x, batch_y = [], []
 	while True:
 		for i in range(batch_size):
 			# ugly resizing for the train input data but is required for the shifting window technique when using a rnn
 			batch_x = np.array(x_train[:, i*batch_size:i*batch_size+batch_size, :])
+			batch_x = np.resize(batch_x, (batch_size, batch_size, 6))
+
+			batch_y = np.array(y_train[i*batch_size:i*batch_size+batch_size, :])
+
+		# print("batch x: " + str(batch_x.shape))
+		# print("batch y: " + str(batch_y.shape))
+		yield batch_x, batch_y
+
+
+def cnn_data_batch_generator(filepath, batch_size, x_train, y_train):
+	batch_x, batch_y = [], []
+	while True:
+		for i in range(batch_size):
+			batch_x = np.array(x_train[:, i*batch_size:i*batch_size+batch_size, :])
+
 			batch_x = np.resize(batch_x, (batch_size, batch_size, 6))
 
 			batch_y = np.array(y_train[i*batch_size:i*batch_size+batch_size, :])

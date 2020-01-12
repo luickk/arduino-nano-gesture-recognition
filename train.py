@@ -43,7 +43,7 @@ def train_rnn(filepath, batch_size, epochs):
 
 	model = simple_rnn(x_train, y_train, batch_size)
 
-	model.fit_generator(data.data_batch_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
+	model.fit_generator(data.rnn_data_batch_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
 
 	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
 
@@ -56,11 +56,11 @@ def train_cnn(filepath, batch_size, epochs):
 
 	model = simple_cnn(x_train, y_train, batch_size)
 
-	model.fit_generator(data.data_batch_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
+	model.fit_generator(data.cnn_data_batch_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
 
-	# x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
+	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
 
-	# print(model.evaluate(x_test, y_test))
+	print(model.evaluate(x_test, y_test))
 
 	return model
 
@@ -93,9 +93,9 @@ def main():
 	epochs = 1
 	batch_size = 10
 
-	# model = train("data/punch_data/recorded_data.csv", batch_size, epochs)
+	# model = train_rnn("data/punch_data/recorded_data.csv", batch_size, epochs)
 
-	model = train_cnn("data/punch_data/test.csv", batch_size, epochs)
+	model = train_cnn("data/punch_data/recorded_data.csv", batch_size, epochs)
 
 	test_predict(model, batch_size, "data/punch_data/sampled_data/punch1.csv")
 
