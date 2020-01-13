@@ -1,6 +1,6 @@
 # Food Watch
 
-The food watch is a strap (or a watch) which alerts the user when he eats something (via gesture recog.). The strap consists of an arduino nano 33 sense which utalizes a tensorflow lite model, which is trained to recognize gestures associated with eating. The training data consists of 3 vector IMU accelerometer and gyro data.
+The Food Watch is a strap (or a watch) which alerts the user when he eats something (via gesture recognition). The strap consists of an Arduino Nano 33 sense which utilizes a tensorflow lite model, which is trained to recognize gestures associated with eating. The training data consists of 3 vector IMU accelerometer and gyro data, with a total of 6 features.
 
 ## Neural Net
 
@@ -11,14 +11,19 @@ Additionally the by the RNN required tensorflow operation that are not supported
 
 ### CNN
 
-A CNN might not be ideal for squential data recognition but is perfect to be used for a sliding window and, continous data flows.
+A CNN might not be ideal for squential data recognition but is perfect to be used as a sliding window and, continous sequenced data flows.
+You can fin further information on that topic [here](https://medium.com/@jon.froiland/convolutional-neural-networks-for-sequence-processing-part-1-420dd9b500).
 
+## TFLite conversion
+
+To actually run the keras model on the Arduino Nano you need to convert it to an tflite model. To do that, run
+`bash to_tf_lite.sh` and replace the model input/ output name.
 
 # Depndencies
 
 - keras v2.1.5
 
-- tensorflow-gpu v1.8.0 <br>
+- tensorflow-gpu v2.0 <br>
 
 - CUDA Toolkit v9.0
 

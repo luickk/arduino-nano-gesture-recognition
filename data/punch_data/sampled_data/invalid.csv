@@ -1,4 +1,4 @@
-gyro_x,gyro_y,gyro_z,accel_x,accel_y,accel_z, eating
+gyro_x,gyro_y,gyro_z,accel_x,accel_y,accel_z,eating
 1.28,1.83,-1.10,0.03,-0.49,0.88,0
 1.46,1.71,-0.61,0.04,-0.49,0.89,0
 1.28,1.59,-0.24,0.03,-0.50,0.89,0

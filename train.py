@@ -1,5 +1,6 @@
 import numpy as np
 import keras
+import random
 
 from keras.models import Sequential
 from keras.models import load_model
@@ -10,7 +11,6 @@ from keras.layers import LSTM
 from keras.layers import Conv1D, MaxPooling1D
 from keras.utils import to_categorical
 from matplotlib import pyplot
-from datetime import date
 
 from data_proc import data
 
@@ -26,8 +26,8 @@ def simple_rnn(x, y, batch_size):
 
 def simple_cnn(x, y, batch_size):
 	model = Sequential()
-	model.add(Conv1D(32, kernel_size=2, activation='relu',input_shape=(batch_size, 6)))
-	model.add(Conv1D(32, 2, activation='relu'))
+	model.add(Conv1D(32, kernel_size=10, activation='relu',input_shape=(batch_size, 6)))
+	model.add(Conv1D(32, 10, activation='relu'))
 	model.add(MaxPooling1D(pool_size=2))
 	model.add(Dropout(0.25))
 	model.add(Flatten())
@@ -65,39 +65,36 @@ def train_cnn(filepath, batch_size, epochs):
 	return model
 
 def save_model(model):
-	path = 'model_data/'+str(date.today())+'.h5'
+	path = 'model_data/'+str(random.randrange(1000))+'.h5'
 	# Save the model
+	print("saved model under: " + path)
 	model.save(path)
 
-	# data.export_lite_model(model)
-
-
-def load_model(path):
-	# Recreate the exact same model purely from the file
-	return load_model(model)
-
-
 def test_predict(model, batch_size, filepath):
+	print(filepath + ": ")
 	x_train, x_test, y_train, y_test = data.load_data(filepath)
 	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
 
 	prediction = model.predict(x_test)
 
 	print("prediction: ")
-	print(np.around(prediction))
+	print(prediction.argmax(axis=-1))
 
 	print("test data: ")
-	print(y_test)
+	print(y_test.argmax(axis=-1))
 
 def main():
-	epochs = 1
-	batch_size = 10
+	epochs = 2
+	batch_size = 30
+
+	# model = load_model("model_data/.h5")
 
 	# model = train_rnn("data/punch_data/recorded_data.csv", batch_size, epochs)
 
 	model = train_cnn("data/punch_data/recorded_data.csv", batch_size, epochs)
 
 	test_predict(model, batch_size, "data/punch_data/sampled_data/punch1.csv")
+	# test_predict(model, batch_size, "data/punch_data/sampled_data/invalid.csv")
 
 	save_model(model)
 
