@@ -25,11 +25,12 @@ To actually run the keras model on the Arduino Nano you need to convert it to an
 
 For that xxd is required, which is preinstalld on most linux distros.
 
+`xxd -i converted_model.tflite > model_data.cc`
+
 ## Run model on arduino
 
 Resources for that can be found [here](https://www.tensorflow.org/lite/microcontrollers/library)
 
-`xxd -i converted_model.tflite > model_data.cc`
 
 # Depndencies
 
