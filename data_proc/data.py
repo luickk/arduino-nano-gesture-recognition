@@ -52,11 +52,6 @@ def load_data(filepath):
 
 	return x_train, x_test, y_train, y_test
 
-def export_lite_model(model):
-	converter = tf.lite.TFLiteConverter.from_keras_model(model)
-	tfmodel = converter.convert()
-	open ("model.tflite" , "wb") .write(tfmodel)
-
 
 def batch_test_data(test_x, test_y, batch_size):
 	for i in range(batch_size):
