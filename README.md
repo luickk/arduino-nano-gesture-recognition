@@ -16,8 +16,20 @@ You can fin further information on that topic [here](https://medium.com/@jon.fro
 
 ## TFLite conversion
 
+### Convert keras model to tflite model
+
 To actually run the keras model on the Arduino Nano you need to convert it to an tflite model. To do that, run
-`bash to_tf_lite.sh` and replace the model input/ output name.
+`bash to_tf_lite.sh <keras model path>` and replace the model input/ output name.
+
+### Convert tflite model to c array
+
+For that xxd is required, which is preinstalld on most linux distros.
+
+## Run model on arduino
+
+Resources for that can be found [here](https://www.tensorflow.org/lite/microcontrollers/library)
+
+`xxd -i converted_model.tflite > model_data.cc`
 
 # Depndencies
 
