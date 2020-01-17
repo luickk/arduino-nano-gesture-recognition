@@ -1,5 +1,3 @@
-#include <Arduino_LSM9DS1.h>
-
 #include <Arduino_LSM9DS1.h> //Include the library for 9-axis IMU
 #include <Arduino_LPS22HB.h> //Include library to read Pressure 
 #include <Arduino_HTS221.h> //Include library to read Temperature and Humidity 
@@ -13,6 +11,7 @@
 #include <tensorflow/lite/version.h>
 
 #include "C:/Users/gelbe/Documents/Projekte/food-watch/arduino/tflite_classification/222_model.cc"
+#include "C:/Users/gelbe/Documents/Projekte/food-watch/arduino/tflite_classification/test_model.cc"
 
 // global variables used for TensorFlow Lite (Micro)
 tflite::MicroErrorReporter tflErrorReporter;
@@ -59,7 +58,7 @@ void setup() {
 
   
   // get the TFL representation of the model byte array
-  tflModel = tflite::GetModel(__222_tflite);
+  tflModel = tflite::GetModel(test_model);
   if (tflModel->version() != TFLITE_SCHEMA_VERSION) {
     Serial.println("Model schema mismatch!");
     while (1);

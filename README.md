@@ -26,6 +26,10 @@ To run your model on the arduino, move the generated c array model to the `aruin
 
 Further resources can be found [here](https://www.tensorflow.org/lite/microcontrollers/library)
 
+### Memory limits
+
+If you encounter an exception that are similar to this: `ARDUINO_NANO33BLE linker_script.ld:138 cannot move location counter backwards`, it is propably due to the arduino running out of memory. In this case you will have to shrink your trained model in size. Side note, the Arduino Nano Sense 33 has a total of 256KB, so your model should not exceed that. As a rough orientation you can substract the size of the source code and take that as a model size limit.  
+
 ## Neural Net Choice
 
 ### RNN
