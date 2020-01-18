@@ -1,1 +1,1 @@
-tflite_convert --output_file=test.tflite --keras_model_file=$1 --inference_type=QUANTIZED_UINT8
+tflite_convert --output_file=conv.tflite --keras_model_file=$1 --inference_type=QUANTIZED_UINT8 && rm arduino/tflite_classification/live_conv_test.cc && xxd -i conv.tflite > arduino/tflite_classification/live_conv_test.cc && rm conv.tflite

@@ -26,12 +26,12 @@ def simple_rnn(x, y, batch_size):
 
 def simple_cnn(x, y, batch_size):
 	model = Sequential()
-	model.add(Conv1D(64, kernel_size=20, activation='relu',input_shape=(batch_size, 6)))
-	model.add(Conv1D(64, 20, activation='relu'))
+	model.add(Conv1D(40, kernel_size=20, activation='relu',input_shape=(batch_size, 6)))
+	model.add(Conv1D(40, 20, activation='relu'))
 	model.add(MaxPooling1D(pool_size=2))
 	model.add(Dropout(0.25))
 	model.add(Flatten())
-	model.add(Dense(128, activation='relu'))
+	model.add(Dense(40, activation='relu'))
 	model.add(Dropout(0.5))
 	model.add(Dense(2, activation='softmax'))
 	model.compile(loss=keras.losses.categorical_crossentropy,optimizer=keras.optimizers.Adadelta(),metrics=['accuracy'])

@@ -10,8 +10,11 @@
 #include <tensorflow/lite/schema/schema_generated.h>
 #include <tensorflow/lite/version.h>
 
-#include "C:/Users/gelbe/Documents/Projekte/food-watch/arduino/tflite_classification/222_model.cc"
 #include "C:/Users/gelbe/Documents/Projekte/food-watch/arduino/tflite_classification/test_model.cc"
+
+
+
+#include "C:/Users/gelbe/Documents/Projekte/food-watch/arduino/tflite_classification/live_conv_test.cc"
 
 // global variables used for TensorFlow Lite (Micro)
 tflite::MicroErrorReporter tflErrorReporter;
@@ -58,7 +61,7 @@ void setup() {
 
   
   // get the TFL representation of the model byte array
-  tflModel = tflite::GetModel(test_model);
+  tflModel = tflite::GetModel(conv_tflite);
   if (tflModel->version() != TFLITE_SCHEMA_VERSION) {
     Serial.println("Model schema mismatch!");
     while (1);
