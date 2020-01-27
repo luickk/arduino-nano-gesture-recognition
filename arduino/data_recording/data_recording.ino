@@ -1,7 +1,4 @@
-#include <Arduino_LSM9DS1.h> //Include the library for 9-axis IMU
-#include <Arduino_LPS22HB.h> //Include library to read Pressure 
-#include <Arduino_HTS221.h> //Include library to read Temperature and Humidity 
-#include <Arduino_APDS9960.h> //Include library for colour, proximity and gesture recognition
+cle#include <Arduino_LSM9DS1.h> //Include the library for 9-axis IMU
 
 int eating_identifier_button = 12;
 
@@ -11,15 +8,6 @@ void setup()
 
   if (!IMU.begin()) //Initialize IMU sensor 
   { Serial.println("Failed to initialize IMU!"); while (1);}
-
-  if (!BARO.begin()) //Initialize Pressure sensor 
-  { Serial.println("Failed to initialize Pressure Sensor!"); while (1);}
-
-  if (!HTS.begin()) //Initialize Temperature and Humidity sensor 
-  { Serial.println("Failed to initialize Temperature and Humidity Sensor!"); while (1);}
-
-  if (!APDS.begin()) //Initialize Colour, Proximity and Gesture sensor 
-  { Serial.println("Failed to initialize Colour, Proximity and Gesture Sensor!"); while (1);}
 
   
   Serial.print("gyro_x,gyro_y,gyro_z,accel_x,accel_y,accel_z");

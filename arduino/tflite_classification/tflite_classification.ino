@@ -1,7 +1,5 @@
 #include <Arduino_LSM9DS1.h> //Include the library for 9-axis IMU
-#include <Arduino_LPS22HB.h> //Include library to read Pressure 
-#include <Arduino_HTS221.h> //Include library to read Temperature and Humidity 
-#include <Arduino_APDS9960.h> //Include library for colour, proximity and gesture recognition
+
 
 #include <TensorFlowLite.h>
 #include <tensorflow/lite/experimental/micro/kernels/all_ops_resolver.h>
@@ -10,11 +8,11 @@
 #include <tensorflow/lite/schema/schema_generated.h>
 #include <tensorflow/lite/version.h>
 
-#include "C:/Users/gelbe/Documents/Projekte/food-watch/arduino/tflite_classification/test_model.cc"
+#include "/Users/luickklippel/Documents/projekte/food-watch/arduino/tflite_classification/test_model.cc"
 
 
 
-#include "C:/Users/gelbe/Documents/Projekte/food-watch/arduino/tflite_classification/live_conv_test.cc"
+#include "/Users/luickklippel/Documents/projekte/food-watch/arduino/tflite_classification/live_conv_test.cc"
 
 // global variables used for TensorFlow Lite (Micro)
 tflite::MicroErrorReporter tflErrorReporter;
@@ -50,15 +48,6 @@ void setup() {
   if (!IMU.begin()) //Initialize IMU sensor 
   { Serial.println("Failed to initialize IMU!"); while (1);}
 
-  if (!BARO.begin()) //Initialize Pressure sensor 
-  { Serial.println("Failed to initialize Pressure Sensor!"); while (1);}
-
-  if (!HTS.begin()) //Initialize Temperature and Humidity sensor 
-  { Serial.println("Failed to initialize Temperature and Humidity Sensor!"); while (1);}
-
-  if (!APDS.begin()) //Initialize Colour, Proximity and Gesture sensor 
-  { Serial.println("Failed to initialize Colour, Proximity and Gesture Sensor!"); while (1);}
-
   
   // get the TFL representation of the model byte array
   tflModel = tflite::GetModel(conv_tflite);
@@ -66,6 +55,7 @@ void setup() {
     Serial.println("Model schema mismatch!");
     while (1);
   }
+  pinMode(LED_BUILTIN, OUTPUT);
   
   // Create an interpreter to run the model
   tflInterpreter = new tflite::MicroInterpreter(tflModel, tflOpsResolver, tensorArena, tensorArenaSize, &tflErrorReporter);
@@ -81,9 +71,17 @@ void setup() {
 float accel_x, accel_y, accel_z;
 float gyro_x, gyro_y, gyro_z;
 
+// normalized to 0-1
+float naccel_x, naccel_y, naccel_z;
+float ngyro_x, ngyro_y, ngyro_z;
+
+float mapf(float val, float in_min, float in_max, float out_min, float out_max) {
+    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 void loop() 
 {  
-  //Accelerometer values 
+  //Accelerometer&Gyro values 
   if (IMU.accelerationAvailable() && IMU.gyroscopeAvailable()) 
   {
     IMU.readAcceleration(accel_x, accel_y, accel_z);
@@ -91,16 +89,24 @@ void loop()
     
     // normalize the IMU data between 0 to 1 and store in the model's
     // input tensor
-    tflInputTensor->data.f[n_samples * 6 + 0] = (accel_x + 4.0) / 8.0;
-    tflInputTensor->data.f[n_samples * 6 + 1] = (accel_y + 4.0) / 8.0;
-    tflInputTensor->data.f[n_samples * 6 + 2] = (accel_z + 4.0) / 8.0;
-    tflInputTensor->data.f[n_samples * 6 + 3] = (gyro_x + 2000.0) / 4000.0;
-    tflInputTensor->data.f[n_samples * 6 + 4] = (gyro_y + 2000.0) / 4000.0;
-    tflInputTensor->data.f[n_samples * 6 + 5] = (gyro_z + 2000.0) / 4000.0;
+    naccel_x = mapf(accel_x, -4, 4, 0, 1);
+    naccel_y = mapf(accel_y, -4, 4, 0, 1);
+    naccel_z = mapf(accel_z, -4, 4, 0, 1);
+    ngyro_x = mapf(gyro_x, -2000, 2000, 0, 1);
+    ngyro_y = mapf(gyro_y, -2000, 2000, 0, 1);
+    ngyro_z = mapf(gyro_z, -2000, 2000, 0, 1);
+    
+    tflInputTensor->data.f[n_samples * 6 + 0] = naccel_x;
+    tflInputTensor->data.f[n_samples * 6 + 1] = naccel_y;
+    tflInputTensor->data.f[n_samples * 6 + 2] = naccel_z;
+    tflInputTensor->data.f[n_samples * 6 + 3] = ngyro_x;
+    tflInputTensor->data.f[n_samples * 6 + 4] = ngyro_y;
+    tflInputTensor->data.f[n_samples * 6 + 5] = ngyro_z;
     
     n_samples++;
   
     if (n_samples == batch_size) {
+      
       // Run inferencing
       TfLiteStatus invokeStatus = tflInterpreter->Invoke();
       if (invokeStatus != kTfLiteOk) {
@@ -108,14 +114,16 @@ void loop()
         while (1);
         return;
       }
-    
+      n_samples = 0;
+      
       // Loop through the output tensor values from the model
       for (int i = 0; i < num_gests; i++) {
         Serial.print(gestures_array[i]);
         Serial.print(": ");
         Serial.println(tflOutputTensor->data.f[i], 6);
+        Serial.print("naX: " ); Serial.print(naccel_x);Serial.print(", naY: " ); Serial.print(naccel_y);Serial.print(", naZ: " ); Serial.println(naccel_z);
+        Serial.print("ngX: " ); Serial.print(ngyro_x);Serial.print(", ngY: " ); Serial.print(ngyro_y);Serial.print(", ngZ: " ); Serial.println(ngyro_z);
       }
-      n_samples = 0;
     }
   }
 }
