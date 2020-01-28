@@ -4,6 +4,34 @@ from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from pandas import read_csv
 
+
+# float mapping function ported from arduino c++ code
+def mapf(val, in_min, in_max, out_min, out_max):
+	return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+
+# float mapping function ported from arduino c++ code
+# cuts off add given mask value to achieve higher sensitivity
+def masked_mapf(val, mask_min, mask_max, in_min, in_max, out_min, out_max):
+	if val >= mask_min and val <= mask_max:
+		return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+	elif val < mask_min:
+		return mask_min
+	elif val > mask_max:
+		return mask_max
+
+# normalizing raw acc/ gyro data to 0-1 because of tensorflow lite implementation
+# returns normalized array
+def normalize_data(gx, gy, gz, ax, ay, az):
+
+	naccel_x = masked_mapf(ax, -1, 1, -1, 1, 0, 1);
+	naccel_y = masked_mapf(ay, -1, 1, -1, 1, 0, 1);
+	naccel_z = masked_mapf(az, -1, 1, -1, 1, 0, 1);
+	ngyro_x = masked_mapf(gx, -1000, 1000, -2000, 2000, 0, 1);
+	ngyro_y = masked_mapf(gy, -1000, 1000, -2000, 2000, 0, 1);
+	ngyro_z = masked_mapf(gz, -1000, 1000, -2000, 2000, 0, 1);
+
+	return ngyro_x, ngyro_y, ngyro_z, naccel_x, naccel_y, naccel_z
+
 # splits x and y data to x,y arrays
 def parse_raw_csv(data_stack):
 	stack_x = []
@@ -14,7 +42,9 @@ def parse_raw_csv(data_stack):
 		else:
 			stack_y.append(1)
 
-		stack_x.append([row[0],row[1],row[2],row[3],row[4],row[5]])
+		stack_x.append(normalize_data(row[0],row[1],row[2],row[3],row[4],row[5]))
+
+		# print(stack_x)
 
 	x = np.array(stack_x)
 	y = np.array(stack_y)

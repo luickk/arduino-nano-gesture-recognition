@@ -75,7 +75,29 @@ float gyro_x, gyro_y, gyro_z;
 float naccel_x, naccel_y, naccel_z;
 float ngyro_x, ngyro_y, ngyro_z;
 
-float mapf(float val, float in_min, float in_max, float out_min, float out_max) {
+
+// float mapping function ported from arduino c++ code
+// cuts off add given mask value to achieve higher sensitivity
+float masked_mapf(float val, float mask_min, float mask_max, float in_min, float in_max, float out_min, float out_max)
+{
+  float final_val;
+  if(val >= mask_min and val <= mask_max) 
+  {
+    final_val = (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  } else if (val < mask_min)
+  {
+    final_val = mask_min;
+  } else if(val > mask_max)
+  {
+    final_val = mask_max;
+  }
+  return final_val;
+}
+
+
+// float mapping function ported from arduino c++ code
+float mapf(float val, float in_min, float in_max, float out_min, float out_max) 
+{
     return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
@@ -89,12 +111,12 @@ void loop()
     
     // normalize the IMU data between 0 to 1 and store in the model's
     // input tensor
-    naccel_x = mapf(accel_x, -4, 4, 0, 1);
-    naccel_y = mapf(accel_y, -4, 4, 0, 1);
-    naccel_z = mapf(accel_z, -4, 4, 0, 1);
-    ngyro_x = mapf(gyro_x, -2000, 2000, 0, 1);
-    ngyro_y = mapf(gyro_y, -2000, 2000, 0, 1);
-    ngyro_z = mapf(gyro_z, -2000, 2000, 0, 1);
+    naccel_x = masked_mapf(accel_x, -1, 1, -1, 1, 0, 1);
+    naccel_y = masked_mapf(accel_y, -1, 1, -1, 1, 0, 1);
+    naccel_z = masked_mapf(accel_z, -1, 1, -1, 1, 0, 1);
+    ngyro_x = masked_mapf(gyro_x, -1000, 1000, -1000, 1000, 0, 1);
+    ngyro_y = masked_mapf(gyro_y, -1000, 1000,  -1000, 1000, 0, 1);
+    ngyro_z = masked_mapf(gyro_z, -1000, 1000, -1000, 1000, 0, 1);
     
     tflInputTensor->data.f[n_samples * 6 + 0] = naccel_x;
     tflInputTensor->data.f[n_samples * 6 + 1] = naccel_y;
@@ -104,7 +126,9 @@ void loop()
     tflInputTensor->data.f[n_samples * 6 + 5] = ngyro_z;
     
     n_samples++;
-  
+
+    // Serial.print("naX: " ); Serial.print(naccel_x);Serial.print(", naY: " ); Serial.print(naccel_y);Serial.print(", naZ: " ); Serial.println(naccel_z);
+    // Serial.print("ngX: " ); Serial.print(ngyro_x);Serial.print(", ngY: " ); Serial.print(ngyro_y);Serial.print(", ngZ: " ); Serial.println(ngyro_z);
     if (n_samples == batch_size) {
       
       // Run inferencing
@@ -121,8 +145,8 @@ void loop()
         Serial.print(gestures_array[i]);
         Serial.print(": ");
         Serial.println(tflOutputTensor->data.f[i], 6);
-        Serial.print("naX: " ); Serial.print(naccel_x);Serial.print(", naY: " ); Serial.print(naccel_y);Serial.print(", naZ: " ); Serial.println(naccel_z);
-        Serial.print("ngX: " ); Serial.print(ngyro_x);Serial.print(", ngY: " ); Serial.print(ngyro_y);Serial.print(", ngZ: " ); Serial.println(ngyro_z);
+        // Serial.print("naX: " ); Serial.print(naccel_x);Serial.print(", naY: " ); Serial.print(naccel_y);Serial.print(", naZ: " ); Serial.println(naccel_z);
+        // Serial.print("ngX: " ); Serial.print(ngyro_x);Serial.print(", ngY: " ); Serial.print(ngyro_y);Serial.print(", ngZ: " ); Serial.println(ngyro_z);
       }
     }
   }
