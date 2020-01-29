@@ -1,6 +1,6 @@
 # Arduino Nano BLE 33 Gesture Recognition
 
-The project consists of an Arduino Nano BLE 33 Sense which utilizes a tensorflow lite model, which is trained to recognize gestures associated based on accelerometer and gyro data. The training data consists of 3 vector IMU accelerometer and gyro data, with a total of 6 features. You can find more information on the training and evaluation process in the rest of the readme.
+The project consists of an Arduino Nano BLE 33 Sense which utilizes a tensorflow lite model, trained to recognize gestures based on accelerometer and gyro data. The training data consists of 3 vector IMU accelerometer and gyro data, with a total of 6 features. You can find more information on the training and evaluation process in the rest of the readme.
 
 ## Setup
 
