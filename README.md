@@ -1,6 +1,6 @@
-# Food Watch
+# Arduino Nano BLE 33 Gesture Recognition
 
-The Food Watch is a strap (or a watch) which alerts the user when he eats something (via gesture recognition). The strap consists of an Arduino Nano 33 sense which utilizes a tensorflow lite model, which is trained to recognize gestures associated with eating. The training data consists of 3 vector IMU accelerometer and gyro data, with a total of 6 features.
+The project consists of an Arduino Nano BLE 33 Sense which utilizes a tensorflow lite model, which is trained to recognize gestures associated based on accelerometer and gyro data. The training data consists of 3 vector IMU accelerometer and gyro data, with a total of 6 features. You can find more information on the training and evaluation process in the rest of the readme.
 
 ## Setup
 
