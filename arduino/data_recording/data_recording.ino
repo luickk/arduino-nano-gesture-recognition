@@ -1,4 +1,4 @@
-cle#include <Arduino_LSM9DS1.h> //Include the library for 9-axis IMU
+#include <Arduino_LSM9DS1.h> //Include the library for 9-axis IMU
 
 int eating_identifier_button = 12;
 

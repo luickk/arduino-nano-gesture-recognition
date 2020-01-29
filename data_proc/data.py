@@ -22,17 +22,14 @@ def masked_mapf(val, mask_min, mask_max, in_min, in_max, out_min, out_max):
 # normalizing raw acc/ gyro data to 0-1 because of tensorflow lite implementation
 # returns normalized array
 def normalize_data(gx, gy, gz, ax, ay, az):
+	ngyro_x = masked_mapf(gx, -1000, 1000, -2000, 2000, -4, 4);
+	ngyro_y = masked_mapf(gy, -1000, 1000, -2000, 2000, -4, 4);
+	ngyro_z = masked_mapf(gz, -1000, 1000, -2000, 2000, -4, 4);
 
-	naccel_x = masked_mapf(ax, -1, 1, -1, 1, 0, 1);
-	naccel_y = masked_mapf(ay, -1, 1, -1, 1, 0, 1);
-	naccel_z = masked_mapf(az, -1, 1, -1, 1, 0, 1);
-	ngyro_x = masked_mapf(gx, -1000, 1000, -2000, 2000, 0, 1);
-	ngyro_y = masked_mapf(gy, -1000, 1000, -2000, 2000, 0, 1);
-	ngyro_z = masked_mapf(gz, -1000, 1000, -2000, 2000, 0, 1);
-
-	return ngyro_x, ngyro_y, ngyro_z, naccel_x, naccel_y, naccel_z
+	return [ngyro_x, ngyro_y, ngyro_z, ax, ay, az]
 
 # splits x and y data to x,y arrays
+# normalizing gyro data to acc. min/max
 def parse_raw_csv(data_stack):
 	stack_x = []
 	stack_y = []
@@ -44,7 +41,7 @@ def parse_raw_csv(data_stack):
 
 		stack_x.append(normalize_data(row[0],row[1],row[2],row[3],row[4],row[5]))
 
-		# print(stack_x)
+		#print(stack_x)
 
 	x = np.array(stack_x)
 	y = np.array(stack_y)

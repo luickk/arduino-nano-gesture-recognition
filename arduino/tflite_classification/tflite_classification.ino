@@ -109,18 +109,14 @@ void loop()
     IMU.readAcceleration(accel_x, accel_y, accel_z);
     IMU.readGyroscope(gyro_x, gyro_y, gyro_z);
     
-    // normalize the IMU data between 0 to 1 and store in the model's
-    // input tensor
-    naccel_x = masked_mapf(accel_x, -1, 1, -1, 1, 0, 1);
-    naccel_y = masked_mapf(accel_y, -1, 1, -1, 1, 0, 1);
-    naccel_z = masked_mapf(accel_z, -1, 1, -1, 1, 0, 1);
-    ngyro_x = masked_mapf(gyro_x, -1000, 1000, -1000, 1000, 0, 1);
-    ngyro_y = masked_mapf(gyro_y, -1000, 1000,  -1000, 1000, 0, 1);
-    ngyro_z = masked_mapf(gyro_z, -1000, 1000, -1000, 1000, 0, 1);
+    // normalizing gyro data to acc. max/min and storing it in model input tensor
+    ngyro_x = masked_mapf(gyro_x, -1000, 1000, -1000, 1000, -4, 4);
+    ngyro_y = masked_mapf(gyro_y, -1000, 1000,  -1000, 1000, -4, 4);
+    ngyro_z = masked_mapf(gyro_z, -1000, 1000, -1000, 1000, -4, 4);
     
-    tflInputTensor->data.f[n_samples * 6 + 0] = naccel_x;
-    tflInputTensor->data.f[n_samples * 6 + 1] = naccel_y;
-    tflInputTensor->data.f[n_samples * 6 + 2] = naccel_z;
+    tflInputTensor->data.f[n_samples * 6 + 0] = accel_x;
+    tflInputTensor->data.f[n_samples * 6 + 1] = accel_y;
+    tflInputTensor->data.f[n_samples * 6 + 2] = accel_z;
     tflInputTensor->data.f[n_samples * 6 + 3] = ngyro_x;
     tflInputTensor->data.f[n_samples * 6 + 4] = ngyro_y;
     tflInputTensor->data.f[n_samples * 6 + 5] = ngyro_z;
