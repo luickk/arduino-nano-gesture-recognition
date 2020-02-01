@@ -79,6 +79,17 @@ def load_data(filepath):
 
 	return x_train, x_test, y_train, y_test
 
+def dnn_data_generator(filepath, batch_size, x_train, y_train):
+	x_train = np.reshape(x_train, (x_train.shape[1], 6))
+	i=0
+
+	while True:
+		if i > x_train.shape[1]:
+			i=0
+		i += 1
+		x_data = x_train[i].reshape(1, 6)
+		y_data = y_train[i].reshape(1, 2)
+		yield x_data, y_data
 
 def batch_test_data(test_x, test_y, batch_size):
 	for i in range(batch_size):

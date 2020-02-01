@@ -38,7 +38,7 @@ Additionally the by the RNN required tensorflow operation that are not supported
 A CNN might not be ideal for squential data recognition but is perfect to be used as a sliding window and, continous sequenced data flows.
 You can fin further information on that topic [here](https://medium.com/@jon.froiland/convolutional-neural-networks-for-sequence-processing-part-1-420dd9b500).
 
-# Depndencies
+# Dependencies
 
 - keras v2.1.5
 
