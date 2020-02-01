@@ -38,6 +38,10 @@ Additionally the by the RNN required tensorflow operation that are not supported
 A CNN might not be ideal for squential data recognition but is perfect to be used as a sliding window and, continous sequenced data flows.
 You can fin further information on that topic [here](https://medium.com/@jon.froiland/convolutional-neural-networks-for-sequence-processing-part-1-420dd9b500).
 
+### DNN
+
+The simple Dense, or Deep Neural Network is also used by the official TensorFlow Documentation for their TFLite C/C++ library. But due to it's small size and inability to learn sequential data well, it does only perform very badly and does not have any advantage compared to a CNN or RNN.
+
 # Dependencies
 
 - keras v2.1.5

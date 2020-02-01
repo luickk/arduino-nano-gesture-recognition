@@ -26,8 +26,8 @@ def simple_rnn(x, y, batch_size):
 
 def simple_cnn(x, y, batch_size):
 	model = Sequential()
-	model.add(Conv1D(40, kernel_size=35, activation='sigmoid',input_shape=(batch_size, 6)))
-	model.add(Conv1D(40, 20, activation='sigmoid'))
+	model.add(Conv1D(40, kernel_size=int(batch_size/2), activation='sigmoid',input_shape=(batch_size, 6)))
+	model.add(Conv1D(40, int(batch_size/2), activation='sigmoid'))
 	model.add(MaxPooling1D(pool_size=2))
 	model.add(Dropout(0.25))
 	model.add(Flatten())
@@ -62,18 +62,6 @@ def train_rnn(filepath, batch_size, epochs):
 
 	return model
 
-def train_dnn(filepath, batch_size, epochs):
-	x_train, x_test, y_train, y_test = data.load_data(filepath)
-
-	model = simple_dnn(x_train, y_train, batch_size)
-
-	model.fit_generator(data.dnn_data_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
-
-	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
-
-	print(model.evaluate(x_test, y_test))
-
-	return model
 
 def train_cnn(filepath, batch_size, epochs):
 	x_train, x_test, y_train, y_test = data.load_data(filepath)
@@ -88,16 +76,33 @@ def train_cnn(filepath, batch_size, epochs):
 
 	return model
 
+
+def train_dnn(filepath, batch_size, epochs):
+	x_train, x_test, y_train, y_test = data.load_data(filepath)
+
+	model = simple_dnn(x_train, y_train, batch_size)
+
+	model.fit_generator(data.dnn_data_generator(filepath, batch_size, x_train, y_train), steps_per_epoch=x_train.shape[1], epochs=epochs)
+
+	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
+
+	print(model.evaluate(x_test.reshape(1,6), y_test))
+
+	return model
+
 def save_model(model):
 	path = 'model_data/'+str(random.randrange(1000))+'.h5'
 	# Save the model
 	print("saved model under: " + path)
 	model.save(path)
 
-def test_predict(model, batch_size, filepath):
+def test_predict(model, batch_size, filepath, batched):
 	print(filepath + ": ")
 	x_train, x_test, y_train, y_test = data.load_data(filepath)
 	x_test, y_test = data.batch_test_data(x_test, y_test, batch_size)
+
+	if not batched:
+		x_test = x_test.reshape(1, 6)
 
 	prediction = model.predict(x_test)
 
@@ -108,19 +113,21 @@ def test_predict(model, batch_size, filepath):
 	print(y_test.argmax(axis=-1))
 
 def main():
-	epochs = 2
-	batch_size = 70
+	cnn_epochs = 2
+	dnn_epochs = 1
+
+	cnn_batch_size = 75
+	dnn_batch_size = 1
 
 	# model = load_model("model_data/.h5")
 
-	# model = train_rnn("data/punch_data/recorded_data.csv", batch_size, epochs)
+	# model = train_rnn("data/flex_data/recorded_data.csv", batch_size, epochs)
 
-	# model = train_cnn("data/punch_data/recorded_data.csv", batch_size, epochs)
+	model = train_cnn("data/flex_data/recorded_data.csv", cnn_batch_size, dnn_epochs)
 
-	model = train_dnn("data/punch_data/recorded_data.csv", 1, 600)
+	# model = train_dnn("data/flex_data/recorded_data2.csv", dnn_batch_size, dnn_epochs)
 
-	# test_predict(model, batch_size, "data/punch_data/sampled_data/punch1.csv")
-	# test_predict(model, batch_size, "data/punch_data/sampled_data/invalid.csv")
+	test_predict(model, cnn_batch_size, "data/flex_data/sampled_data/flex1.csv", True)
 
 	save_model(model)
 

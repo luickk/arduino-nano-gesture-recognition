@@ -89,6 +89,7 @@ def dnn_data_generator(filepath, batch_size, x_train, y_train):
 		i += 1
 		x_data = x_train[i].reshape(1, 6)
 		y_data = y_train[i].reshape(1, 2)
+		
 		yield x_data, y_data
 
 def batch_test_data(test_x, test_y, batch_size):
